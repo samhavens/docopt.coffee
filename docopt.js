@@ -434,6 +434,7 @@ class TokenStream extends Array {
       source.constructor === String
         ? source.replace(/^\s+|\s+$/, '').split(/\s+/)
         : source;
+    this.stream = stream;
     this.push.apply(this, stream); // CreateListFromArrayLike called on non-object
   }
 
@@ -446,7 +447,7 @@ class TokenStream extends Array {
   }
 
   toString() {
-    return [].slice.apply(this).toString();
+    return this.stream.toString();
   }
 
   join(glue) {
@@ -454,7 +455,7 @@ class TokenStream extends Array {
   }
 }
 
-const parse_shorts = function (tokens, options) {
+const parseShorts = function (tokens, options) {
   let o;
   let raw = tokens.shift().slice(1);
   const parsed = [];
@@ -503,7 +504,7 @@ const parse_shorts = function (tokens, options) {
   return parsed;
 };
 
-const parse_long = function (tokens, options) {
+const parseLong = function (tokens, options) {
   let left;
   let o;
   let [_, raw, value] = Array.from((left = tokens.current().match(/(.*?)=(.*)/)) != null
@@ -548,7 +549,7 @@ const parse_long = function (tokens, options) {
   return [opt];
 };
 
-const parse_pattern = function (source, options) {
+const parsePattern = function (source, options) {
   const tokens = new TokenStream(
     source.replace(/([\[\]\(\)\|]|\.\.\.)/g, ' $1 '),
     DocoptLanguageError,
@@ -589,7 +590,7 @@ var parse_seq = function (tokens, options) {
   while (
     ((needle = tokens.current()), ![null, ']', ')', '|'].includes(needle))
   ) {
-    let atom = parse_atom(tokens, options);
+    let atom = parseAtom(tokens, options);
     if (tokens.current() === '...') {
       atom = [new OneOrMore(atom)];
       tokens.shift();
@@ -626,9 +627,9 @@ const parseAtom = function parseAtom(tokens, options) {
     if (token === '--') {
       return [new Command(tokens.shift())];
     }
-    return parse_long(tokens, options);
+    return parseLong(tokens, options);
   } else if (token[0] === '-' && token !== '-') {
-    return parse_shorts(tokens, options);
+    return parseShorts(tokens, options);
   } else if (
     (token[0] === '<' && token[token.length - 1] === '>') ||
     /^[^a-z]*[A-Z]+[^a-z]*$/.test(token)
@@ -655,10 +656,10 @@ const parseArgs = function parseArgs(source, options) {
         return result;
       })());
     } else if (token.slice(0, 2) === '--') {
-      const long = parse_long(tokens, options);
+      const long = parseLong(tokens, options);
       opts = opts.concat(long);
     } else if (token[0] === '-' && token !== '-') {
-      const shorts = parse_shorts(tokens, options);
+      const shorts = parseShorts(tokens, options);
       opts = opts.concat(shorts);
     } else {
       opts.push(new Argument(null, tokens.shift()));
@@ -685,7 +686,7 @@ const printableUsage = (doc, name) => {
     .replace(/^\s+|\s+$/, '');
 };
 
-const formal_usage = function (printableUsage) {
+const formalUsage = function (printableUsage) {
   const pu = printableUsage.split(/\s+/).slice(1); // split and drop "usage:"
   return Array.from(pu.slice(1))
     .map(s => (s === pu[0] ? '|' : s))
@@ -762,7 +763,7 @@ const docopt = (doc, kwargs) => {
 
   const usage = printableUsage(doc, name);
   const potOptions = parseDocOptions(doc);
-  const formalPattern = parse_pattern(formal_usage(usage), potOptions);
+  const formalPattern = parsePattern(formalUsage(usage), potOptions);
 
   argv = parseArgs(argv, potOptions);
   extras(help, version, argv, doc);
@@ -804,11 +805,11 @@ module.exports = {
   OneOrMore,
   TokenStream,
   Dict,
-  formal_usage,
+  formalUsage,
   parseDocOptions,
-  parse_pattern,
-  parse_long,
-  parse_shorts,
+  parsePattern,
+  parseLong,
+  parseShorts,
   parseArgs,
   printableUsage,
 };
