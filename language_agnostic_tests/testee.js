@@ -1,16 +1,22 @@
-#!/usr/bin/env coffee
+#!/usr/bin/env node
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
 
-{docopt} = require '../docopt'
+const {docopt} = require('../docopt');
 
-doc = ''
+let doc = '';
 
-process.stdin.resume()
-process.stdin.setEncoding 'utf8'
-process.stdin.on 'data', (chunk) ->
-    doc += chunk
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+process.stdin.on('data', chunk => doc += chunk);
 
-process.stdin.on 'end', ->
-    try
-        console.log JSON.stringify docopt doc
-    catch e
-        console.log '"user-error"'
+process.stdin.on('end', function() {
+    try {
+        return console.log(JSON.stringify(docopt(doc)));
+    } catch (e) {
+        return console.log('"user-error"');
+    }
+});
