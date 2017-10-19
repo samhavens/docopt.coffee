@@ -76,7 +76,7 @@ setup()
 
 #{new Option, TokenStream, parse_shorts, parse_long,
 #                   parse_args, printable_usage, docopt} = module
-`with (require('./docopt')) { //`
+{Option, TokenStream, parse_shorts, parse_long, parse_args, printable_usage, docopt} = require './docopt'
 
 test "Option.parse", ->
     eq(
@@ -477,8 +477,7 @@ test "option_match", ->
 test "argument_match", ->
     eq new Argument('N').match([new Argument(null, 9)]), [true, [], [new Argument('N', 9)]]
     eq new Argument('N').match([new Option('-x')]), [false, [new Option('-x')], []]
-    eq new Argument('N').match([new Option('-x'), new Option('-a'), new Argument(null, 5)])\
-           , [true, [new Option('-x'), new Option('-a')], [new Argument('N', 5)]]
+    eq new Argument('N').match([new Option('-x'), new Option('-a'), new Argument(null, 5)]), [true, [new Option('-x'), new Option('-a')], [new Argument('N', 5)]]
     eq new Argument('N').match([new Argument(null, 9), new Argument(null, 0)]), [
             true, [new Argument(null, 0)], [new Argument('N', 9)]]
 
@@ -1032,7 +1031,5 @@ test "options_without_description", ->
 test 'allow_single_underscore', ->
     eq docopt('usage: prog [-]', argv: '-'), new Dict([['-', true]])
     eq docopt('usage: prog [-]', argv: ''), new Dict([['-', false]])
-
-`}`
 
 teardown()
