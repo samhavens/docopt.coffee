@@ -1,12 +1,12 @@
-doc = """Usage: odd_even_example.coffee [-h | --help] (ODD EVEN)...
+const doc = `Usage: odd_even_example.coffee [-h | --help] (ODD EVEN)...
 
 Example, try:
-  odd_even_example.coffee 1 2 3 4
+odd_even_example.coffee 1 2 3 4
 
 Options:
-  -h, --help
+-h, --help
+\
+`;
+const {docopt} = require('../docopt');
 
-"""
-{docopt} = require '../docopt'
-
-console.log docopt(doc)
+console.log(docopt(doc));

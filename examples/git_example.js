@@ -1,4 +1,4 @@
-doc = """
+const doc = `\
 Usage:
     git_example.coffee remote [-v | --verbose]
     git_example.coffee remote add [-t <branch>] [-m <master>] [-f]
@@ -31,8 +31,8 @@ Options:
     --delete
     --push
     --mirror
+\
+`;
+const {docopt} = require('../docopt');
 
-"""
-{docopt} = require '../docopt'
-
-console.log docopt(doc, version: '2.0')
+console.log(docopt(doc, {version: '2.0'}));
