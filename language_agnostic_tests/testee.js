@@ -13,7 +13,7 @@ process.stdin.resume();
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', chunk => doc += chunk);
 
-process.stdin.on('end', function() {
+process.stdin.on('end', () => {
     try {
         return console.log(JSON.stringify(docopt(doc)));
     } catch (e) {

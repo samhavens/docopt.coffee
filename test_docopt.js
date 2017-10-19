@@ -99,7 +99,27 @@ setup();
 
 //{new Option, TokenStream, parse_shorts, parse_long,
 //                   parse_args, printable_usage, docopt} = module
-const {Option, TokenStream, parse_shorts, parse_long, parse_args, printable_usage, docopt} = require('./docopt');
+const {
+    docopt,
+    Option,
+    Argument,
+    Command,
+    Required,
+    AnyOptions,
+    Either,
+    Optional,
+    Pattern,
+    OneOrMore,
+    TokenStream,
+    Dict,
+    formal_usage,
+    parse_doc_options,
+    parse_pattern,
+    parse_long,
+    parse_shorts,
+    parse_args,
+    printable_usage
+} = require('./docopt');
 
 test("Option.parse", function() {
     eq(
